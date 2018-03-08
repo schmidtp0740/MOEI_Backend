@@ -66,11 +66,10 @@ func getURL() (url string) {
 	return
 }
 
-func blockchainRequest(m blockchainCall, c chan string) string {
+func blockchainRequest(m blockchainCall, url string) string {
 
 	b, err := json.Marshal(m)
 
-	url := <-c // Receive url from Channel
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 
 	req.Header.Set("Content-Type", "application/json")
@@ -93,11 +92,7 @@ func handler(w http.ResponseWriter, r *http.Request, action string) {
 
 	json.NewDecoder(r.Body).Decode(&data)
 
-	channelForURL := make(chan string)
-	go func() {
-		url := getURL() + "/bcsgw/rest/v1/transaction/invocation"
-		channelForURL <- url
-	}()
+	url := getURL() + "/bcsgw/rest/v1/transaction/invocation"
 
 	id := data.ID
 	heartRate := strconv.Itoa(data.HeartRate)
@@ -115,7 +110,7 @@ func handler(w http.ResponseWriter, r *http.Request, action string) {
 		},
 	}
 
-	body := blockchainRequest(m, channelForURL)
+	body := blockchainRequest(m, url)
 
 	json.NewEncoder(w).Encode(body)
 
