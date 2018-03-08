@@ -115,11 +115,10 @@ func handler(w http.ResponseWriter, r *http.Request, action string) {
 		},
 	}
 
-	go func() {
-		body := blockchainRequest(m, channelForURL)
+	body := blockchainRequest(m, channelForURL)
 
-		json.NewEncoder(w).Encode(body)
+	json.NewEncoder(w).Encode(body)
 
-		fmt.Printf("Response from blockchain: %s\n\n", body)
-	}()
+	fmt.Printf("Response from blockchain: %s\n\n", body)
+
 }
