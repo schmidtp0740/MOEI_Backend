@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -44,28 +43,6 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getURL() (url string) {
-
-	file, err := os.Open(".env")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	data := make([]byte, 100)
-
-	count, err := file.Read(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	url = string(data[:count])
-
-	fmt.Printf("url: %s\n\n", url)
-
-	return
-}
-
 func blockchainRequest(m blockchainCall, url string) string {
 
 	b, err := json.Marshal(m)
@@ -92,7 +69,7 @@ func handler(w http.ResponseWriter, r *http.Request, action string) {
 
 	json.NewDecoder(r.Body).Decode(&data)
 
-	url := getURL() + "/bcsgw/rest/v1/transaction/invocation"
+	url :=  "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation"
 
 	id := data.ID
 	heartRate := strconv.Itoa(data.HeartRate)
