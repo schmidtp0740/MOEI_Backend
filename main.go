@@ -19,14 +19,6 @@ type data struct {
 	TimeStamp int    `json:"timeStamp"`
 }
 
-type blockchainCall struct {
-	channel      string
-	chaincode    string
-	chaincodeVer string
-	method       string
-	args         []string
-}
-
 func main() {
 	router := mux.NewRouter()
 
@@ -39,15 +31,43 @@ func main() {
 // SendData ...
 func SendData(w http.ResponseWriter, r *http.Request) {
 
-	handler(w, r, "insertData")
+	var data data
 
+	json.NewDecoder(r.Body).Decode(&data)
+
+	url := "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation"
+
+	id := data.ID
+	heartRate := strconv.Itoa(data.HeartRate)
+	unit := data.Unit
+	timeStamp := strconv.Itoa(data.TimeStamp)
+
+	m := []byte(`{ 
+		"channel": "mychannel", 
+		"chaincode": "hrcc", 
+		"chaincodeVer": "v2", 
+		"method": "insertData",	
+		"args": ["` + id + `", "` +
+		heartRate + `","` +
+		unit + `","` +
+		timeStamp + `"]}`,
+	)
+
+	body := request(m, url)
+
+	fmt.Println(string(body))
+
+	json.NewEncoder(w).Encode(body)
 }
 
-func blockchainRequest(m blockchainCall, url string) string {
+func request(m []byte, url string) string {
 
-	b, err := json.Marshal(m)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(m))
+	if err != nil {
+		panic(err)
+	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
+	fmt.Println("payload: ", string(m))
 
 	req.Header.Set("Content-Type", "application/json")
 
@@ -57,40 +77,8 @@ func blockchainRequest(m blockchainCall, url string) string {
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	return string(body)
-}
-
-func handler(w http.ResponseWriter, r *http.Request, action string) {
-	var data data
-
-	json.NewDecoder(r.Body).Decode(&data)
-
-	url :=  "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation"
-
-	id := data.ID
-	heartRate := strconv.Itoa(data.HeartRate)
-	unit := data.Unit
-	timeStamp := strconv.Itoa(data.TimeStamp)
-
-	m := blockchainCall{
-		"mychannel",
-		"emrCC",
-		"v1",
-		action,
-		[]string{
-			id, heartRate,
-			unit, timeStamp,
-		},
-	}
-
-	body := blockchainRequest(m, url)
-
-	json.NewEncoder(w).Encode(body)
-
-	fmt.Printf("Response from blockchain: %s\n\n", body)
-
 }
