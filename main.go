@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -18,6 +19,8 @@ type data struct {
 	Unit      string `json:"unit"`
 	TimeStamp int    `json:"timeStamp"`
 }
+
+var baseURL = os.Getenv("URL")
 
 func main() {
 	router := mux.NewRouter()
@@ -38,7 +41,7 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&data)
 
-	url := "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation"
+	url := baseURL + "/bcsgw/rest/v1/transaction/invocation"
 
 	id := data.ID
 	heartRate := strconv.Itoa(data.HeartRate)
@@ -58,14 +61,13 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 
 	body := api.Request(m, url)
 
-	fmt.Println(body)
+	//fmt.Println(body)
 
 	json.NewEncoder(w).Encode(body)
 }
 
 func getData(w http.ResponseWriter, r *http.Request) {
-	url := "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/query"
-
+	url := baseURL + "/bcsgw/rest/v1/transaction/query"
 	m := []byte(`{
 		"channel": "mychannel",
 		"chaincode": "hrcc",
@@ -75,7 +77,8 @@ func getData(w http.ResponseWriter, r *http.Request) {
 	}`)
 
 	body := api.Request(m, url)
-	fmt.Println(body)
+
+	//fmt.Println(body)
 
 	json.NewEncoder(w).Encode(body)
 }
