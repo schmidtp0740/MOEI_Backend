@@ -1,16 +1,15 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"github.com/schmidtp0740/MOEI_Backend/api"
 )
 
 type data struct {
@@ -57,9 +56,9 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 		timeStamp + `"]}`,
 	)
 
-	body := request(m, url)
+	body := api.Request(m, url)
 
-	fmt.Println(string(body))
+	fmt.Println(body)
 
 	json.NewEncoder(w).Encode(body)
 }
@@ -74,47 +73,9 @@ func getData(w http.ResponseWriter, r *http.Request) {
 		"method": "getHistory",
 		"args": ["001"]
 	}`)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(m))
-	if err != nil {
-		panic(err)
-	}
 
-	fmt.Println("payload: ", string(m))
-	req.Header.Set("Content-Type", "application/json")
+	body := api.Request(m, url)
+	fmt.Println(body)
 
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	fmt.Println(string(body))
-
-	json.NewEncoder(w).Encode(string(body))
-}
-
-func request(m []byte, url string) string {
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(m))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("payload: ", string(m))
-
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	return string(body)
+	json.NewEncoder(w).Encode(body)
 }

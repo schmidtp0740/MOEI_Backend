@@ -1,6 +1,6 @@
 FROM golang
 
-WORKDIR /go/src/app
+WORKDIR /$GOPATH/src/github.com/schmidtp0740/MOEI_Backend
 COPY . .
-RUN go get github.com/gorilla/mux &&  go build -o app
+RUN go get github.com/gorilla/mux &&  go get github.com/rs/cors && go build -o app
 CMD [ "./app" ]
