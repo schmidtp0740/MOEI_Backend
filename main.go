@@ -49,7 +49,7 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 	m := []byte(`{ 
 		"channel": "mychannel", 
 		"chaincode": "hrcc", 
-		"chaincodeVer": "v2", 
+		"chaincodeVer": "v1", 
 		"method": "insertData",	
 		"args": ["` + id + `", "` +
 		heartRate + `","` +
@@ -70,7 +70,7 @@ func getData(w http.ResponseWriter, r *http.Request) {
 	m := []byte(`{
 		"channel": "mychannel",
 		"chaincode": "hrcc",
-		"chaincodeVer": "v3",
+		"chaincodeVer": "v1",
 		"method": "getHistory",
 		"args": ["001"]
 	}`)
