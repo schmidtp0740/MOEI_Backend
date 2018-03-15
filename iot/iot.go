@@ -1,13 +1,12 @@
 package iot
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/schmidtp0740/MOEI_Backend/request"
 )
 
 type data struct {
@@ -42,7 +41,7 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 		timeStamp + `"]}`,
 	)
 
-	body := request(m, url)
+	body := request.Request(m, url)
 
 	//fmt.Println(body)
 
@@ -61,33 +60,9 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 		"args": ["001"]
 	}`)
 
-	body := request(m, url)
+	body := request.Request(m, url)
 
 	//fmt.Println(body)
 
 	json.NewEncoder(w).Encode(body)
-}
-
-// request ...
-func request(message []byte, url string) string {
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(message))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("payload: ", string(message))
-
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	return string(body)
 }
