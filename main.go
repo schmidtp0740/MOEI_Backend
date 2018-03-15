@@ -15,6 +15,8 @@ import (
 
 func main() {
 	router := mux.NewRouter()
+
+	// API endpoints
 	router.HandleFunc("/data", iot.SendData).Methods("POST")
 	router.HandleFunc("/getData", iot.GetData).Methods("GET")
 	router.HandleFunc("/bcs", hack.GetStatus).Methods("GET")
@@ -25,6 +27,7 @@ func main() {
 	router.HandleFunc("/rx/{ID}", rx.GetRx).Methods("GET")
 	router.HandleFunc("/rx/{ID}", rx.InsertRx).Methods("POST")
 	router.HandleFunc("/rx/{ID}", rx.ModifyRx).Methods("PATCH")
+
 	fmt.Println("Listening on port: 8000")
 	handler := cors.Default().Handler(router)
 
