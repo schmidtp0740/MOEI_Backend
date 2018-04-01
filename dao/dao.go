@@ -37,6 +37,24 @@ func FindAll() []Rx {
 	return rx
 }
 
+// FindRx ...
+func (rx *Rx) FindRx() bool {
+	session, err := mgo.Dial("localhost:27017")
+	if err != nil {
+		log.Println("Could not connect to Mongo: ", err.Error())
+		return false
+	}
+	defer session.Close()
+
+	c := session.DB("RxService").C("Rx")
+	err = c.FindId(bson.M{"RXID": rx.RXID})
+	if err != nil {
+		log.Println("Error finding file: ", err.Error())
+		return false
+	}
+	return true
+}
+
 // Insert ...
 func (rx *Rx) Insert() bool {
 	session, err := mgo.Dial("Localhost:27017")
@@ -47,7 +65,25 @@ func (rx *Rx) Insert() bool {
 	defer session.Close()
 
 	c := session.DB("RxService").C("Rx")
-	_, err = c.UpsertId(rx.RXID, rx)
+	_, err = c.UpsertId(bson.M{"RXID": rx.RXID}, rx)
+	if err != nil {
+		log.Println("Error creating Profile: ", err.Error())
+		return false
+	}
+	return true
+}
+
+// Modify ...
+func (rx *Rx) Modify() bool {
+	session, err := mgo.Dial("Localhost:27017")
+	if err != nil {
+		log.Println("Could not connect to Mongo: ", err.Error())
+		return false
+	}
+	defer session.Close()
+
+	c := session.DB("RxService").C("Rx")
+	err = c.Update(bson.M{"RXID": rx.RXID}, &rx)
 	if err != nil {
 		log.Println("Error creating Profile: ", err.Error())
 		return false
