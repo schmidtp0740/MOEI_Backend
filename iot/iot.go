@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/schmidtp0740/MOEI_Backend/request"
+	"github.com/schmidtp0740/MOEI_BACKEND/request"
 )
 
 type data struct {

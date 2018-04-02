@@ -4,12 +4,18 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/schmidtp0740/MOEI_Backend/dao"
+	"github.com/gorilla/mux"
+	"github.com/schmidtp0740/MOEI_BACKEND/dao"
 )
+
+type rxList struct {
+	RX []dao.Rx `json:"RX"`
+}
 
 // GetAllRx ...
 func GetAllRx(w http.ResponseWriter, r *http.Request) {
-	rx := dao.FindAll()
+	rx := rxList{dao.FindAll()}
+
 	rxJSON, err := json.Marshal(rx)
 	if err != nil {
 		panic(err)
@@ -20,7 +26,8 @@ func GetAllRx(w http.ResponseWriter, r *http.Request) {
 
 // GetRx ...
 func GetRx(w http.ResponseWriter, r *http.Request) {
-	rx := dao.FindRx()
+	id := mux.Vars(r)["ID"]
+	rx := rxList{dao.FindAllRxForPatient(id)}
 	rxJSON, err := json.Marshal(rx)
 	if err != nil {
 		panic(err)
@@ -38,7 +45,8 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	rx.Insert()
+	id := mux.Vars(r)["ID"]
+	_ = rx.Insert(id)
 
 	rxJSON, err := json.Marshal(rx)
 	if err != nil {
@@ -56,7 +64,8 @@ func ModifyRx(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&rx); err != nil {
 		panic(err)
 	}
-	rx.Modify()
+
+	_ = rx.Modify()
 
 	rxJSON, err := json.Marshal(rx)
 	if err != nil {

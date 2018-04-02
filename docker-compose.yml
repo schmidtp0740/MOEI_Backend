@@ -7,8 +7,8 @@ services:
   #    - "8000:8000"
   #   environment:
   #    - URL=http://129.146.106.151:4001
-  #   depends_on:
-  #    - mongodb
+    # depends_on:
+    #  - mongodb
   mongodb:
     image: mongo
     ports:

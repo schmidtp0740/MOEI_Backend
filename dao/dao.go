@@ -1,10 +1,7 @@
 package dao
 
 import (
-	"log"
-
-	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"strconv"
 )
 
 // Rx ...
@@ -22,71 +19,44 @@ type Rx struct {
 	TimeStamp    string `json:"TimeStamp"`
 }
 
+var rxList []Rx
+var rxLedger []Rx
+var rxCounter int
+
 // FindAll ...
 func FindAll() []Rx {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to mongo: ", err.Error())
-		return nil
-	}
-	defer session.Close()
-
-	c := session.DB("RxService").C("Rx")
-	var rx []Rx
-	err = c.Find(bson.M{}).All(&rx)
-	return rx
+	return rxLedger
 }
 
-// FindRx ...
-func (rx *Rx) FindRx() bool {
-	session, err := mgo.Dial("localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to Mongo: ", err.Error())
-		return false
-	}
-	defer session.Close()
+// FindAllRxForPatient ...
+func FindAllRxForPatient(id string) (rxResponse []Rx) {
 
-	c := session.DB("RxService").C("Rx")
-	err = c.FindId(bson.M{"RXID": rx.RXID})
-	if err != nil {
-		log.Println("Error finding file: ", err.Error())
-		return false
+	for _, rx := range rxList {
+		if rx.ID == id {
+			rxResponse = append(rxResponse, rx)
+		}
+
 	}
-	return true
+	return
 }
 
 // Insert ...
-func (rx *Rx) Insert() bool {
-	session, err := mgo.Dial("Localhost:27017")
-	if err != nil {
-		log.Println("Could no connect to Mongo: ", err.Error())
-		return false
-	}
-	defer session.Close()
-
-	c := session.DB("RxService").C("Rx")
-	_, err = c.UpsertId(bson.M{"RXID": rx.RXID}, rx)
-	if err != nil {
-		log.Println("Error creating Profile: ", err.Error())
-		return false
-	}
+func (rx *Rx) Insert(id string) bool {
+	rxCounter++
+	rx.RXID = "RX" + strconv.Itoa(rxCounter)
+	rx.ID = id
+	rxList = append(rxList, *rx)
+	rxLedger = append(rxLedger, *rx)
 	return true
 }
 
 // Modify ...
 func (rx *Rx) Modify() bool {
-	session, err := mgo.Dial("Localhost:27017")
-	if err != nil {
-		log.Println("Could not connect to Mongo: ", err.Error())
-		return false
-	}
-	defer session.Close()
-
-	c := session.DB("RxService").C("Rx")
-	err = c.Update(bson.M{"RXID": rx.RXID}, &rx)
-	if err != nil {
-		log.Println("Error creating Profile: ", err.Error())
-		return false
+	for _, rxTemp := range rxList {
+		if rxTemp.RXID == rx.RXID {
+			rxTemp.Status = rx.Status
+			rxLedger = append(rxLedger, rxTemp)
+		}
 	}
 	return true
 }

@@ -23,7 +23,8 @@ type persons struct {
 	Persons []person
 }
 
-var people = []person{
+// People ...
+var People = []person{
 	{
 		ID:        "001",
 		FirstName: "John",
@@ -47,7 +48,7 @@ var people = []person{
 // GetPeople ...
 func GetPeople(w http.ResponseWriter, r *http.Request) {
 
-	personJSON, err := json.Marshal(persons{people})
+	personJSON, err := json.Marshal(persons{People})
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +62,7 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fmt.Println(vars["FirstName"])
 	var response person
-	for _, value := range people {
+	for _, value := range People {
 		if strings.ToLower(vars["FirstName"]) == strings.ToLower(value.FirstName) && strings.ToLower(vars["LastName"]) == strings.ToLower(value.LastName) {
 			response = value
 		}

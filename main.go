@@ -7,10 +7,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"github.com/schmidtp0740/MOEI_Backend/hack"
-	"github.com/schmidtp0740/MOEI_Backend/iot"
-	"github.com/schmidtp0740/MOEI_Backend/people"
-	"github.com/schmidtp0740/MOEI_Backend/rx"
+	"github.com/schmidtp0740/MOEI_BACKEND/hack"
+	"github.com/schmidtp0740/MOEI_BACKEND/ins"
+	"github.com/schmidtp0740/MOEI_BACKEND/iot"
+	"github.com/schmidtp0740/MOEI_BACKEND/people"
+	"github.com/schmidtp0740/MOEI_BACKEND/rx"
 )
 
 func main() {
@@ -32,16 +33,17 @@ func main() {
 	router.HandleFunc("/rx", rx.GetAllRx).Methods("GET")
 
 	// Get Rx Data
-	//TODO
 	router.HandleFunc("/rx/{ID}", rx.GetRx).Methods("GET")
 
 	// Insert Rx
-	// TODO
 	router.HandleFunc("/rx/{ID}", rx.InsertRx).Methods("POST")
 
 	// Fill Rx
 	// TODO
 	router.HandleFunc("/rx/{ID}", rx.ModifyRx).Methods("PATCH")
+
+	// Get Insurance
+	router.HandleFunc("/insurance/{ID}", ins.GetIns).Methods("GET")
 
 	fmt.Println("Listening on port: 8000")
 	handler := cors.Default().Handler(router)
