@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/schmidtp0740/MOEI_BACKEND/people"
+	"github.com/schmidtp0740/moei_backend/people"
 )
 
 // type ins struct {

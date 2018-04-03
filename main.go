@@ -7,11 +7,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"github.com/schmidtp0740/MOEI_BACKEND/hack"
-	"github.com/schmidtp0740/MOEI_BACKEND/ins"
-	"github.com/schmidtp0740/MOEI_BACKEND/iot"
-	"github.com/schmidtp0740/MOEI_BACKEND/people"
-	"github.com/schmidtp0740/MOEI_BACKEND/rx"
+	"github.com/schmidtp0740/moei_backend/hack"
+	"github.com/schmidtp0740/moei_backend/ins"
+	"github.com/schmidtp0740/moei_backend/iot"
+	"github.com/schmidtp0740/moei_backend/people"
+	"github.com/schmidtp0740/moei_backend/rx"
 )
 
 func main() {

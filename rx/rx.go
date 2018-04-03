@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/schmidtp0740/MOEI_BACKEND/dao"
+	"github.com/schmidtp0740/moei_backend/dao"
 )
 
 type rxList struct {
