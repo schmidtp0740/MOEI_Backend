@@ -55,17 +55,17 @@ func (rx *Rx) Modify() bool {
 	for _, rxTemp := range rxList {
 		if rxTemp.RXID == rx.RXID {
 			rxT := Rx{
-				RXID: rxTemp.RXID,
-				ID: rxTemp.ID,
-				FirstName: rxTemp.FirstName,
-				LastName: rxTemp.LastName,
-				DOB: rxTemp.DOB,
+				RXID:         rxTemp.RXID,
+				ID:           rxTemp.ID,
+				FirstName:    rxTemp.FirstName,
+				LastName:     rxTemp.LastName,
+				DOB:          rxTemp.DOB,
 				Prescription: rxTemp.Prescription,
-				Refills: rxTemp.Refills,
-				Doctor: rxTemp.Doctor,
-				License: rxTemp.License,
-				Status: rx.Status,
-				TimeStamp: rx.TimeStamp,
+				Refills:      rxTemp.Refills,
+				Doctor:       rxTemp.Doctor,
+				License:      rxTemp.License,
+				Status:       rx.Status,
+				TimeStamp:    rx.TimeStamp,
 			}
 			rxTemp.Status = rx.Status
 			rxLedger = append(rxLedger, rxT)
