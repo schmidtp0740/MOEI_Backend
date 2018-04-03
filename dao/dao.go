@@ -12,7 +12,7 @@ type Rx struct {
 	LastName     string `json:"LastName"`
 	DOB          string `json:"DOB"`
 	Prescription string `json:"Prescription"`
-	Refills      int    `json:"Refills"`
+	Refills      string `json:"Refills"`
 	Doctor       string `json:"Doctor"`
 	License      string `json:"License"`
 	Status       string `json:"Status"`
