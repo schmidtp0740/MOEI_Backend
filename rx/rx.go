@@ -13,7 +13,7 @@ type rxList struct {
 }
 
 type response struct {
-	Response string `json:"Response"`
+	Response string `json:"response"`
 }
 
 
