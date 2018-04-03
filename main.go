@@ -46,7 +46,8 @@ func main() {
 	router.HandleFunc("/insurance/{ID}", ins.GetIns).Methods("GET")
 
 	fmt.Println("Listening on port: 8000")
-	handler := cors.Default().Handler(router)
+	c := cors.AllowAll()
+	handler := c.Handler(router)
 
 	log.Fatal(http.ListenAndServe(":8000", handler))
 }

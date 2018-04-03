@@ -3,7 +3,7 @@ package rx
 import (
 	"encoding/json"
 	"net/http"
-
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/schmidtp0740/moei_backend/dao"
 )
@@ -68,12 +68,13 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 
 //ModifyRx ...
 func ModifyRx(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Fill Rx called")
 	defer r.Body.Close()
 	var rx dao.Rx
 	if err := json.NewDecoder(r.Body).Decode(&rx); err != nil {
 		panic(err)
 	}
-
+	fmt.Println("request from pharmamist: ", rx)
 	_ = rx.Modify()
 
 	resp := response{
