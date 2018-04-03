@@ -16,7 +16,7 @@ type Rx struct {
 	Doctor       string `json:"Doctor"`
 	License      string `json:"License"`
 	Status       string `json:"Status"`
-	TimeStamp    string `json:"TimeStamp"`
+	TimeStamp    int    `json:"TimeStamp"`
 }
 
 var rxList []Rx
