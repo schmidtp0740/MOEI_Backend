@@ -54,16 +54,19 @@ func GetIns(w http.ResponseWriter, r *http.Request) {
 			lastName = person.LastName
 		}
 	}
+
 	body := `<?xml version="1.0" encoding="UTF-8"?>` +
 		`<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">` +
 		`<soap:Header/>` +
 		`<soap:Body>` +
 		`<ns1:submit xmlns:ns1="http://webservice.com/">` +
-		`<arg0>` + firstName + ` ` + lastName + `</arg1>` +
+		`<arg0>` + firstName + ` ` + lastName + `</arg0>` +
 		`</ns1:submit>` +
 		`</soap:Body>` +
 		`<soap:Envelope>`
+
 	fmt.Println("Body", body)
+
 	req, err := http.NewRequest("POST", soacsURL, strings.NewReader(body))
 	req.Method = "POST"
 	if err != nil {
@@ -72,6 +75,7 @@ func GetIns(w http.ResponseWriter, r *http.Request) {
 
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
 	req.Header.Add("SOAPAction", "submit")
+
 	client := http.Client{}
 
 	resp, err := client.Do(req)
