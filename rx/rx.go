@@ -12,6 +12,11 @@ type rxList struct {
 	RX []dao.Rx `json:"RX"`
 }
 
+type response struct {
+	Response string `json:"Response"`
+}
+
+
 // GetAllRx ...
 func GetAllRx(w http.ResponseWriter, r *http.Request) {
 	rx := rxList{dao.FindAll()}
@@ -48,12 +53,16 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["ID"]
 	_ = rx.Insert(id)
 
-	rxJSON, err := json.Marshal(rx)
+	resp := response{
+		"ok",
+	}
+	respJSON, err := json.Marshal(resp)
 	if err != nil {
 		panic(err)
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(rxJSON)
+	w.Write(respJSON)
 
 }
 
@@ -67,11 +76,14 @@ func ModifyRx(w http.ResponseWriter, r *http.Request) {
 
 	_ = rx.Modify()
 
-	rxJSON, err := json.Marshal(rx)
+	resp := response{
+		"ok",
+	}
+	respJSON, err := json.Marshal(resp)
 	if err != nil {
 		panic(err)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(rxJSON)
+	w.Write(respJSON)
 
 }

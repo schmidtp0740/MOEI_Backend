@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var status = false
+var status = true
 
 type payload struct {
 	RXID       string
