@@ -20,7 +20,7 @@ type person struct {
 }
 
 type persons struct {
-	Persons []person `json:"person"`
+	Persons []person `json:"persons"`
 }
 
 // People ...
