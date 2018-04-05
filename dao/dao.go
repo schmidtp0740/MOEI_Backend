@@ -6,17 +6,17 @@ import (
 
 // Rx ...
 type Rx struct {
-	RXID         string `json:"RXID"`
-	ID           string `json:"ID"`
-	FirstName    string `json:"FirstName"`
-	LastName     string `json:"LastName"`
-	DOB          string `json:"DOB"`
-	Prescription string `json:"Prescription"`
-	Refills      string `json:"Refills"`
-	Doctor       string `json:"Doctor"`
-	License      string `json:"License"`
-	Status       string `json:"Status"`
-	TimeStamp    int    `json:"TimeStamp"`
+	RXID         string `json:"rxid"`
+	ID           string `json:"id"`
+	FirstName    string `json:"firstName"`
+	LastName     string `json:"lastName"`
+	DOB          string `json:"dob"`
+	Prescription string `json:"prescription"`
+	Refills      string `json:"refills"`
+	Doctor       string `json:"doctor"`
+	License      string `json:"license"`
+	Status       string `json:"status"`
+	TimeStamp    int    `json:"timestamp"`
 }
 
 var rxList []Rx

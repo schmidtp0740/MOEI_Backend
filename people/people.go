@@ -10,17 +10,17 @@ import (
 )
 
 type person struct {
-	ID        string
-	FirstName string
-	LastName  string
-	DOB       string
-	Address   string
-	Ethnicity string
-	Phone     string
+	ID        string `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	DOB       string `json:"dob"`
+	Address   string `json:"address"`
+	Ethnicity string `json:"ethnicity"`
+	Phone     string `json:"phone"`
 }
 
 type persons struct {
-	Persons []person
+	Persons []person `json:"person"`
 }
 
 // People ...

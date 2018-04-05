@@ -2,20 +2,20 @@ package rx
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/schmidtp0740/moei_backend/dao"
 )
 
 type rxList struct {
-	RX []dao.Rx `json:"RX"`
+	RX []dao.Rx `json:"rx"`
 }
 
 type response struct {
 	Response string `json:"response"`
 }
-
 
 // GetAllRx ...
 func GetAllRx(w http.ResponseWriter, r *http.Request) {
