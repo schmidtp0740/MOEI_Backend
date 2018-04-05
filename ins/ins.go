@@ -5,14 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/schmidtp0740/moei_backend/people"
 )
-
-var regexMatch = `({[":\s\,0-9\-\.A-Za-z\/]*})+`
 
 type ins struct {
 	Name           string `json:"name"`
@@ -24,9 +23,9 @@ type ins struct {
 	ExpirationDate string `json:"expirationDate"`
 }
 
-const soacsURL = "http://private-e5e0b-ironbankbcsapidoc.apiary-mock.com/insurancesoap"
+//const soacsURL = "http://private-e5e0b-ironbankbcsapidoc.apiary-mock.com/insurancesoap"
 
-//const soacsURL = "http://129.213.62.119/StateInsuranceProj/StateInsurancePLProxyService?wsdl"
+var soacsURL = "http://" + os.Getenv("SOA") + "/StateInsuranceProj/StateInsurancePLProxyService?wsdl"
 
 // GetIns ....
 func GetIns(w http.ResponseWriter, r *http.Request) {
@@ -61,10 +60,18 @@ func GetIns(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(resp.Body)
 	fmt.Println("response: ", string(b))
 
-	re := regexp.MustCompile(regexMatch)
-	responseParsedString := re.FindAllString(string(b), -1)
+	re := regexp.MustCompile(`policy+`)
+	responseParsedString := re.ReplaceAllString(string(b), `policyId`)
+	fmt.Println("\nresponse:", responseParsedString)
+
+	re = regexp.MustCompile(`exp+`)
+	responseParsedString = re.ReplaceAllString(responseParsedString, `expirationDate`)
+	fmt.Println("\nResponse:", responseParsedString)
+
+	re = regexp.MustCompile(`({[":\s\,0-9\-\.A-Za-z\/]*})+`)
+	responseParsedStrings := re.FindAllString(responseParsedString, -1)
 	var insuranceJSON []byte
-	for _, insuranceIterator := range responseParsedString {
+	for _, insuranceIterator := range responseParsedStrings {
 		var insurance ins
 		err = json.Unmarshal([]byte(insuranceIterator), &insurance)
 		if err != nil {
