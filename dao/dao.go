@@ -16,6 +16,7 @@ type Rx struct {
 	Doctor       string `json:"doctor"`
 	License      string `json:"license"`
 	Status       string `json:"status"`
+	User         string `json:"user"`
 	TimeStamp    int    `json:"timestamp"`
 }
 
@@ -64,6 +65,7 @@ func (rx *Rx) Modify() bool {
 				Refills:      rxTemp.Refills,
 				Doctor:       rxTemp.Doctor,
 				License:      rxTemp.License,
+				User:         rx.User,
 				Status:       rx.Status,
 				TimeStamp:    rx.TimeStamp,
 			}
