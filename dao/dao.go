@@ -17,7 +17,14 @@ type Rx struct {
 	License      string `json:"license"`
 	Status       string `json:"status"`
 	User         string `json:"user"`
+	Insurance    *ins   `json:"insurance"`
 	TimeStamp    int    `json:"timestamp"`
+}
+
+type ins struct {
+	Company        string `json:"company"`
+	PolicyID       string `json:"policyId"`
+	ExpirationDate string `json:"expirationDate"`
 }
 
 var rxList []Rx
@@ -53,7 +60,7 @@ func (rx *Rx) Insert(id string) bool {
 
 // Modify ...
 func (rx *Rx) Modify() bool {
-	for _, rxTemp := range rxList {
+	for key, rxTemp := range rxList {
 		if rxTemp.RXID == rx.RXID {
 			rxT := Rx{
 				RXID:         rxTemp.RXID,
@@ -67,9 +74,10 @@ func (rx *Rx) Modify() bool {
 				License:      rxTemp.License,
 				User:         rx.User,
 				Status:       rx.Status,
+				Insurance:    &ins{Company: rxTemp.Insurance.Company, PolicyID: rxTemp.Insurance.PolicyID, ExpirationDate: rxTemp.Insurance.ExpirationDate},
 				TimeStamp:    rx.TimeStamp,
 			}
-			rxTemp.Status = rx.Status
+			rxList[key].Status = rx.Status
 			rxLedger = append(rxLedger, rxT)
 		}
 	}
