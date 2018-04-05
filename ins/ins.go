@@ -2,70 +2,46 @@ package ins
 
 import (
 	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/schmidtp0740/moei_backend/people"
 )
 
-// type ins struct {
-// 	insuranceCompany string `json:"insuranceCompany"`
-// 	policyID         string `json:"policyId"`
-// 	expirationDate   string `json:"expirationDate"`
-// }
-type envelope struct {
-	XMLName xml.Name `xml:"Envelope"`
-	Body    struct {
-		XMLName xml.Name `xml:"Body"`
-		Company struct {
-			XMLName xml.Name `xml:"company"`
-			Text    string   `xml:",chardata"`
-		}
-		PolicyID struct {
-			XMLName xml.Name `xml:"policyId"`
-			Text    string   `xml:",chardata"`
-		}
-		ExpirationDate struct {
-			XMLName xml.Name `xml:"expirationDate"`
-			Text    string   `xml:",chardata"`
-		}
-	}
-}
+var regexMatch = `({[":\s\,0-9\-\.A-Za-z\/]*})+`
 
 type ins struct {
-	Company        string `json:"insuranceCompany"`
+	Name           string `json:"name"`
+	Address        string `json:"address"`
+	Phone          string `json:"phone"`
+	SSN            string `json:"ssn"`
+	Company        string `json:"company"`
 	PolicyID       string `json:"policyId"`
 	ExpirationDate string `json:"expirationDate"`
 }
 
 const soacsURL = "http://private-e5e0b-ironbankbcsapidoc.apiary-mock.com/insurancesoap"
 
+//const soacsURL = "http://129.213.62.119/StateInsuranceProj/StateInsurancePLProxyService?wsdl"
+
 // GetIns ....
 func GetIns(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["ID"]
 	var firstName, lastName string
-	for _, person := range people.People {
-		if person.ID == id {
-			firstName = person.FirstName
-			lastName = person.LastName
-		}
-	}
 
-	body := `<?xml version="1.0" encoding="UTF-8"?>` +
-		`<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">` +
-		`<soap:Header/>` +
-		`<soap:Body>` +
-		`<ns1:submit xmlns:ns1="http://webservice.com/">` +
-		`<arg0>` + firstName + ` ` + lastName + `</arg0>` +
-		`</ns1:submit>` +
-		`</soap:Body>` +
-		`<soap:Envelope>`
+	body := `<soapenv:Envelope     xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soap:Header     xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+	</soap:Header>
+	<soapenv:Body>
+	<web:getFromDB     xmlns:web="http://webserviceapp/"/>
+	</soapenv:Body>
+	</soapenv:Envelope>`
 
-	fmt.Println("Body", body)
+	//fmt.Println("Body", body)
 
 	req, err := http.NewRequest("POST", soacsURL, strings.NewReader(body))
 	req.Method = "POST"
@@ -74,7 +50,6 @@ func GetIns(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req.Header.Add("Content-Type", "text/xml;charset=UTF-8")
-	req.Header.Add("SOAPAction", "submit")
 
 	client := http.Client{}
 
@@ -86,19 +61,49 @@ func GetIns(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadAll(resp.Body)
 	fmt.Println("response: ", string(b))
 
-	env := new(envelope)
-	err = xml.Unmarshal(b, env)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("env.body.getInsurance", env.Body.PolicyID)
+	re := regexp.MustCompile(regexMatch)
+	responseParsedString := re.FindAllString(string(b), -1)
+	var insuranceJSON []byte
+	for _, insuranceIterator := range responseParsedString {
+		var insurance ins
+		err = json.Unmarshal([]byte(insuranceIterator), &insurance)
+		if err != nil {
+			println(err)
+		}
+		var breakValue = false
 
-	ins := ins{env.Body.Company.Text, env.Body.PolicyID.Text, env.Body.ExpirationDate.Text}
-	insJSON, err := json.Marshal(ins)
-	if err != nil {
-		fmt.Println(err)
+		for _, person := range people.People {
+			if person.ID == id {
+				firstName = person.FirstName
+				lastName = person.LastName
+			}
+
+			if strings.ToLower(firstName+" "+lastName) == strings.ToLower(insurance.Name) {
+				fmt.Println(insurance)
+				insuranceJSON, err = json.Marshal(insurance)
+				if err != nil {
+					println(err)
+				}
+				breakValue = true
+				break
+
+			}
+		}
+		if breakValue {
+			break
+		}
+
+	}
+
+	if insuranceJSON == nil {
+		errStruct := map[string]string{"error": "insurance not found"}
+		insuranceJSON, err = json.Marshal(errStruct)
+		if err != nil {
+			println(err)
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(insJSON)
+	w.Write(insuranceJSON)
+
 }
