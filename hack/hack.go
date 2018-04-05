@@ -9,9 +9,9 @@ import (
 var status = true
 
 type payload struct {
-	RXID       string
-	Status     string
-	Blockchain string
+	RXID       string `json:"rxid"`
+	Status     string `json:"status"`
+	Blockchain string `json:"blockchain"`
 }
 
 // GetStatus ...
