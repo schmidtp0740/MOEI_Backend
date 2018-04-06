@@ -23,12 +23,15 @@ type ins struct {
 	ExpirationDate string `json:"expirationDate"`
 }
 
-//const soacsURL = "http://private-e5e0b-ironbankbcsapidoc.apiary-mock.com/insurancesoap"
-
-var soacsURL = "http://" + os.Getenv("SOA") + "/StateInsuranceProj/StateInsurancePLProxyService?wsdl"
-
 // GetIns ....
 func GetIns(w http.ResponseWriter, r *http.Request) {
+	var soacsURL string
+
+	if os.Getenv("SOA") != "" {
+		soacsURL = os.Getenv("SOA")
+	} else {
+		soacsURL = "http://private-e5e0b-ironbankbcsapidoc.apiary-mock.com/insurancesoap"
+	}
 	id := mux.Vars(r)["ID"]
 	var firstName, lastName string
 

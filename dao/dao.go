@@ -68,7 +68,7 @@ func (rx *Rx) Modify() bool {
 				FirstName:    rxTemp.FirstName,
 				LastName:     rxTemp.LastName,
 				DOB:          rxTemp.DOB,
-				Prescription: rxTemp.Prescription,
+				Prescription: rx.Prescription,
 				Refills:      rxTemp.Refills,
 				Doctor:       rxTemp.Doctor,
 				License:      rxTemp.License,
@@ -78,6 +78,7 @@ func (rx *Rx) Modify() bool {
 				TimeStamp:    rx.TimeStamp,
 			}
 			rxList[key].Status = rx.Status
+			rxList[key].Prescription = rx.Prescription
 			rxLedger = append(rxLedger, rxT)
 		}
 	}
