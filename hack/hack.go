@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-var status = true
+var status = false
 
 type payload struct {
 	RXID       string `json:"rxid"`
@@ -18,7 +18,7 @@ type payload struct {
 func GetStatus(w http.ResponseWriter, r *http.Request) {
 	var payload payload
 
-	if status == true {
+	if status {
 		payload.RXID = "RX001"
 		payload.Blockchain = "Doctor"
 		payload.Status = "True"
