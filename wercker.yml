@@ -48,16 +48,18 @@ deploy:
         echo "wercker root"
         echo $WERCKER_ROOT
         ls -la $WERCKER_ROOT
-        mkdir -p /usr/app/src
-        cp -r . /usr/app/src
-        ls -la /usr/app/src
+        mkdir -p /go/src/app
+        cp -r . /go/src/app
+        ls -la /go/src/app
+    - script:
+      cwd: /go/src/app
     - internal/docker-push:
         repository: schmidtp0740/moei_backend
         registry: https://registry.hub.docker.com/v2
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         tag: ${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}
-        cmd: ./app
+        cmd: /go/src/app/app
         ports: "8000"
     - script:
         name: debug
