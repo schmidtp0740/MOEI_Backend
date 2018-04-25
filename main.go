@@ -1,120 +1,53 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"github.com/schmidtp0740/moei_backend/hack"
+	"github.com/schmidtp0740/moei_backend/ins"
+	"github.com/schmidtp0740/moei_backend/iot"
+	"github.com/schmidtp0740/moei_backend/people"
+	"github.com/schmidtp0740/moei_backend/rx"
 )
-
-type data struct {
-	ID        string `json:"id"`
-	HeartRate int    `json:"heartRate"`
-	Unit      string `json:"unit"`
-	TimeStamp int    `json:"timeStamp"`
-}
 
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/data", SendData).Methods("POST")
-	router.HandleFunc("/getData", getData).Methods("GET")
+	// API endpoints
+	router.HandleFunc("/data", iot.SendData).Methods("POST")
+	router.HandleFunc("/getData", iot.GetData).Methods("GET")
+	router.HandleFunc("/bcs", hack.GetStatus).Methods("GET")
+	router.HandleFunc("/hack", hack.SetStatus).Methods("GET")
+
+	// Get All Patient Data
+	router.HandleFunc("/pd", people.GetPeople).Methods("GET")
+
+	// Get Patent Data
+	router.HandleFunc("/pd/{FirstName}/{LastName}", people.GetPerson).Methods("GET")
+
+	//Get All Rx Data
+	router.HandleFunc("/rx", rx.GetAllRx).Methods("GET")
+
+	// Get Rx Data
+	router.HandleFunc("/rx/{ID}", rx.GetRx).Methods("GET")
+
+	// Insert Rx
+	router.HandleFunc("/rx/{ID}", rx.InsertRx).Methods("POST")
+
+	// Fill Rx
+	// TODO
+	router.HandleFunc("/rx/{ID}", rx.ModifyRx).Methods("PATCH")
+
+	// Get Insurance
+	router.HandleFunc("/insurance/{ID}", ins.GetIns).Methods("GET")
 
 	fmt.Println("Listening on port: 8000")
-	handler := cors.Default().Handler(router)
+	c := cors.AllowAll()
+	handler := c.Handler(router)
 
 	log.Fatal(http.ListenAndServe(":8000", handler))
-}
-
-// SendData ...
-func SendData(w http.ResponseWriter, r *http.Request) {
-
-	var data data
-
-	json.NewDecoder(r.Body).Decode(&data)
-
-	url := "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation"
-
-	id := data.ID
-	heartRate := strconv.Itoa(data.HeartRate)
-	unit := data.Unit
-	timeStamp := strconv.Itoa(data.TimeStamp)
-
-	m := []byte(`{ 
-		"channel": "mychannel", 
-		"chaincode": "hrcc", 
-		"chaincodeVer": "v1", 
-		"method": "insertData",	
-		"args": ["` + id + `", "` +
-		heartRate + `","` +
-		unit + `","` +
-		timeStamp + `"]}`,
-	)
-
-	body := request(m, url)
-
-	fmt.Println(string(body))
-
-	json.NewEncoder(w).Encode(body)
-}
-
-func getData(w http.ResponseWriter, r *http.Request) {
-	url := "http://129.146.106.151:4001/bcsgw/rest/v1/transaction/query"
-
-	m := []byte(`{
-		"channel": "mychannel",
-		"chaincode": "hrcc",
-		"chaincodeVer": "v1",
-		"method": "getHistory",
-		"args": ["001"]
-	}`)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(m))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("payload: ", string(m))
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	fmt.Println(string(body))
-
-	json.NewEncoder(w).Encode(string(body))
-}
-
-func request(m []byte, url string) string {
-
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(m))
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("payload: ", string(m))
-
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
-
-	return string(body)
 }

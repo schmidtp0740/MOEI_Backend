@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  # backend:
+  #   build: .
+  #   ports:
+  #    - "8000:8000"
+  #   environment:
+  #    - URL=http://129.146.106.151:4001
+    # depends_on:
+    #  - mongodb
+  mongodb:
+    image: mongo
+    ports:
+     - "27017:27017"
