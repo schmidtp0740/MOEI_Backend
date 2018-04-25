@@ -48,6 +48,9 @@ deploy:
         echo "wercker root"
         echo $WERCKER_ROOT
         ls -la $WERCKER_ROOT
+        mkdir -p /usr/app/src
+        cp -r . /usr/app/src
+        ls -la /usr/app/src
     - internal/docker-push:
         repository: schmidtp0740/moei_backend
         registry: https://registry.hub.docker.com/v2
