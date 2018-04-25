@@ -47,7 +47,7 @@ deploy:
         ls -la ./
         echo "wercker root"
         echo ""
-        ls -la 
+        ls -la ./
     - internal/docker-scratch-push:
         repository: schmidtp0740/moei_backend
         registry: https://registry.hub.docker.com/v2
