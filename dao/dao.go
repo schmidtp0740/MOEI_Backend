@@ -1,6 +1,9 @@
 package dao
 
 import (
+	"bytes"
+	"io/ioutil"
+	"net/http"
 	"strconv"
 )
 
@@ -49,13 +52,45 @@ func FindAllRxForPatient(id string) (rxResponse []Rx) {
 }
 
 // Insert ...
-func (rx *Rx) Insert(id string) bool {
+func (rx *Rx) Insert(id string) string {
 	rxCounter++
 	rx.RXID = "RX" + strconv.Itoa(rxCounter)
 	rx.ID = id
 	rxList = append(rxList, *rx)
 	rxLedger = append(rxLedger, *rx)
-	return true
+
+	url := `http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation`
+	payloadStr := []byte(`{
+		"channel": "doctorpharmacist",
+		"chaincode": "emrCC",
+		"chaincodeVer": "v1",
+		"method": "insertObject",
+		"args": ["` + rx.RXID + `", 
+			"` + rx.ID + `",
+			"` + rx.FirstName + `",
+			"` + rx.LastName + `",
+			` + strconv.Itoa(rx.TimeStamp) + `,
+			"` + rx.Doctor + `",
+			"` + rx.Prescription + `",
+			"` + rx.Refills + `",
+			"` + rx.Status + `",]
+	}`)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadStr))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	return string(body)
 }
 
 // Modify ...

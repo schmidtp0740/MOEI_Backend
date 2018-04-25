@@ -1,0 +1,82 @@
+box:
+  id: golang
+  ports:
+    - "8000"
+  
+dev:
+  steps:
+    - wercker/setup-go-workspace:
+      package-dir: github.com/schmidtp0740/moei_backend
+    - internal/watch:
+      code: |
+        go get
+        go build -o app
+        ./app
+      ports: "8000"
+      reload: true
+    
+build:
+  steps:
+    - wercker/setup-go-workspace:
+      package-dir: github.com/schmidtp0740/moei_backend
+    - wercker/golint
+    - script:
+      name: go build
+      code: |
+        go get
+        go build -o app
+    # - script:
+    #   name: go test
+    #   code: |
+    #     go test
+    - script:
+      name: copy artifacts to output folder
+      code: |
+        cp -r app kubernetes ${WERCKER_OUTPUT_DIR}
+        ls -la ${WERCKER_OUTPUT_DIR}
+
+
+deploy:
+  box: google/golang
+  steps:
+    - internal/docker-scratch-push:
+        repository: schmidtp0740/moei_backend
+        registry: https://registry.hub.docker.com/v2
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        tag: ${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}
+        cmd: ./app
+        ports: "8000"
+    - script:
+        name: debug
+        code: |
+          echo $WERCKER_ROOT
+          ls -l $WERCKER_ROOT
+    - bash-template:
+        cwd: $WERCKER_ROOT/kubernetes
+    - script:
+        name: Remove template files
+        cwd: $WERCKER_ROOT/kubernetes
+        code: |
+          rm *.template.yaml
+    - create-file:
+        name: Create admin.pem
+        cwd: $WERCKER_ROOT/kubernetes
+        filename: admin.pem
+        content: $KUBE_ADMIN
+    - create-file:
+        name: Create admin-key.pem
+        cwd: $WERCKER_ROOT/kubernetes
+        filename: admin-key.pem
+        content: $KUBE_ADMIN_KEY
+    - kubectl:
+        cwd: $WERCKER_ROOT/kubernetes
+        server: ${KUBE_ENDPOINT}
+        client-certificate: admin.pem
+        client-key: admin-key.pem
+        insecure-skip-tls-verify: true
+        command: apply -f .
+    - script:
+        name: cleanup
+        cwd: $WERCKER_ROOT/kubernetes
+        code: rm -rf *.pem deployment.yaml

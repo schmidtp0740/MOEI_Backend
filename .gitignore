@@ -16,3 +16,7 @@
 debug
  
 .env
+
+app
+
+.wercker

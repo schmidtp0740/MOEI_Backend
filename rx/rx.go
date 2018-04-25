@@ -51,7 +51,9 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id := mux.Vars(r)["ID"]
-	_ = rx.Insert(id)
+	body := rx.Insert(id)
+
+	fmt.Println(body)
 
 	resp := response{
 		"ok",
