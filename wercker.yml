@@ -44,7 +44,7 @@ deploy:
       code: |
         echo "current"
         pwd
-        ls -la ./
+        ls ./
     - internal/docker-scratch-push:
         repository: schmidtp0740/moei_backend
         registry: https://registry.hub.docker.com/v2
