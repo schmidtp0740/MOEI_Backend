@@ -24,7 +24,7 @@ build:
       name: go build
       code: |
         go get
-        go build -o app
+        CGO_ENABLED=0 go build -a -ldflags '-s' -installsuffix cgo -o app .
     # - script:
     #   name: go test
     #   code: |
