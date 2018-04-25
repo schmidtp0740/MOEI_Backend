@@ -46,7 +46,7 @@ deploy:
         pwd
         ls -la ./
         echo "wercker root"
-        echo $WERCKER_ROOT
+        echo ""
         ls -la 
     - internal/docker-scratch-push:
         repository: schmidtp0740/moei_backend
