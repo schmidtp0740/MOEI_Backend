@@ -39,6 +39,15 @@ build:
 deploy:
   box: google/golang
   steps:
+    -script:
+      name: debug
+      code: |
+        echo "current"
+        pwd
+        ls -la ./
+        echo "wercker root"
+        echo $WERCKER_ROOT
+        ls -la $WERCKER_ROOT
     - internal/docker-scratch-push:
         repository: schmidtp0740/moei_backend
         registry: https://registry.hub.docker.com/v2
