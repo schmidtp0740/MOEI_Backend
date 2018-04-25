@@ -53,13 +53,13 @@ deploy:
         ls -la /go/src/app
     - script:
       cwd: /go/src/app
-    - internal/docker-push:
+    - internal/docker-scratch-push:
         repository: schmidtp0740/moei_backend
         registry: https://registry.hub.docker.com/v2
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
         tag: ${WERCKER_GIT_BRANCH}-${WERCKER_GIT_COMMIT}
-        cmd: /go/src/app/app
+        cmd: ./app
         ports: "8000"
     - script:
         name: debug
