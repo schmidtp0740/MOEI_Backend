@@ -8,5 +8,8 @@ spec:
   - name: backend-port
     port: 8080
     targetPort: 8000
+  - name: portals-port
+    port: 81
+    targetPort: 3000
   selector:
     app: moei
