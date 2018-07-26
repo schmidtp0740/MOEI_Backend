@@ -73,21 +73,10 @@ deploy:
         cwd: $WERCKER_ROOT/kubernetes
         code: |
           rm *.template.yaml
-    - create-file:
-        name: Create admin.pem
-        cwd: $WERCKER_ROOT/kubernetes
-        filename: admin.pem
-        content: $KUBE_ADMIN
-    - create-file:
-        name: Create admin-key.pem
-        cwd: $WERCKER_ROOT/kubernetes
-        filename: admin-key.pem
-        content: $KUBE_ADMIN_KEY
     - kubectl:
         cwd: $WERCKER_ROOT/kubernetes
         server: ${KUBE_ENDPOINT}
-        client-certificate: admin.pem
-        client-key: admin-key.pem
+        token: ${KUBE_TOKEN}
         insecure-skip-tls-verify: true
         command: apply -f .
     - script:
