@@ -3,7 +3,6 @@ package iot
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/schmidtp0740/moei_backend/request"
@@ -23,7 +22,7 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 
 	json.NewDecoder(r.Body).Decode(&data)
 
-	url := os.Getenv("URL") + "/bcsgw/rest/v1/transaction/invocation"
+	url := "http://129.213.52.239:4001/bcsgw/rest/v1/transaction/invocation"
 
 	id := data.ID
 	heartRate := strconv.Itoa(data.HeartRate)
@@ -51,7 +50,7 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 // GetData ...
 func GetData(w http.ResponseWriter, r *http.Request) {
 
-	url := os.Getenv("URL") + "/bcsgw/rest/v1/transaction/query"
+	url := "http://129.213.52.239:4001/bcsgw/rest/v1/transaction/query"
 	m := []byte(`{
 		"channel": "mychannel",
 		"chaincode": "hrcc",

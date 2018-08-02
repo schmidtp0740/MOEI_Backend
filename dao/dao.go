@@ -59,10 +59,10 @@ func (rx *Rx) Insert(id string) string {
 	rxList = append(rxList, *rx)
 	rxLedger = append(rxLedger, *rx)
 
-	url := `http://129.146.106.151:4001/bcsgw/rest/v1/transaction/invocation`
+	url := `http://129.213.52.239:4001/bcsgw/rest/v1/transaction/invocation`
 	payloadStr := []byte(`{
 		"channel": "doctorpharmacist",
-		"chaincode": "emrCC",
+		"chaincode": "emrcc",
 		"chaincodeVer": "v1",
 		"method": "insertObject",
 		"args": ["` + rx.RXID + `", 
