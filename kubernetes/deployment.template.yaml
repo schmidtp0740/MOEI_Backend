@@ -18,3 +18,8 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
+      - name: console
+        image: schmidtp0740/moei_console:0.2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001

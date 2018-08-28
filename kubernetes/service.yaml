@@ -11,5 +11,8 @@ spec:
   - name: portals-port
     port: 81
     targetPort: 3000
+  - name: console-port
+    port: 82
+    targetPort: 3001
   selector:
     app: moei
