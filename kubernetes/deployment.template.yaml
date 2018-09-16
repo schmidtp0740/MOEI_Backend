@@ -27,5 +27,4 @@ spec:
         image: schmidtp0740/moei_iot_console:0.1
         imagePullPolicy: Always
         ports:
-        - containerPort: 3000
-        - hostPort: 3002
+        - containerPort: 3002
