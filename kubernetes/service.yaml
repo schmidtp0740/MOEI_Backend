@@ -14,5 +14,8 @@ spec:
   - name: console-port
     port: 82
     targetPort: 3001
+  - name: iot-console-port
+    port: 83
+    targetPort: 3002
   selector:
     app: moei
