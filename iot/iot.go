@@ -31,8 +31,8 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 
 	m := []byte(`{ 
 		"channel": "mychannel", 
-		"chaincode": "hrcc", 
-		"chaincodeVer": "v2", 
+		"chaincode": "iotcc", 
+		"chaincodeVer": "v3", 
 		"method": "insertData",	
 		"args": ["` + id + `", "` +
 		heartRate + `","` +
@@ -53,7 +53,7 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	url := "http://129.213.52.239:4001/bcsgw/rest/v1/transaction/query"
 	m := []byte(`{
 		"channel": "mychannel",
-		"chaincode": "hrcc",
+		"chaincode": "iotcc",
 		"chaincodeVer": "v3",
 		"method": "getHistory",
 		"args": ["001"]
