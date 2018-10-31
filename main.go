@@ -12,13 +12,13 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-	// insert iot data
+	// insert heart rate data for patient
 	// TODO
-	router.HandleFunc("/data", SendData).Methods("POST")
+	router.HandleFunc("/hr", SendData).Methods("POST")
 
-	// retrieve iot data
+	// retrieve heart rate data for a patient
 	// TODO
-	router.HandleFunc("/getData", GetData).Methods("GET")
+	router.HandleFunc("/hr/{patientID}", GetData).Methods("GET")
 
 	// retreive hack status
 	// TODO
@@ -31,7 +31,7 @@ func main() {
 	// Get All Patient Data
 	router.HandleFunc("/pd", GetPeople).Methods("GET")
 
-	// Get Patent Data
+	// Get Patient Data
 	router.HandleFunc("/pd/{patientID}", GetPerson).Methods("GET")
 
 	//Get All Rx Data History
@@ -39,19 +39,21 @@ func main() {
 	router.HandleFunc("/rx", GetAllRx).Methods("GET")
 
 	// Get Rx Data
-	// TODO
 	router.HandleFunc("/rx/{patientID}", GetRx).Methods("GET")
 
 	// Insert Rx
 	router.HandleFunc("/rx", InsertRx).Methods("POST")
 
 	// Modify Rx
-	// TESTED FAILED
 	router.HandleFunc("/rx", ModifyRx).Methods("PATCH")
 
 	// Get Insurance
 	// TODO
-	router.HandleFunc("/insurance/{ID}", GetIns).Methods("GET")
+	router.HandleFunc("/insurance/{patientID}", GetIns).Methods("GET")
+
+	// New Insurance
+	// TODO
+	// router.HandleFunc("/insurance/{patientID}", NewIns).Methods("POST")
 
 	fmt.Println("Listening on port: 8080")
 	c := cors.AllowAll()
