@@ -1,11 +1,9 @@
-package iot
+package main
 
 import (
 	"encoding/json"
 	"net/http"
 	"strconv"
-
-	"github.com/schmidtp0740/moei_backend/request"
 )
 
 type data struct {
@@ -29,18 +27,18 @@ func SendData(w http.ResponseWriter, r *http.Request) {
 	unit := data.Unit
 	timeStamp := strconv.Itoa(data.TimeStamp)
 
-	m := []byte(`{ 
-		"channel": "mychannel", 
-		"chaincode": "iotcc", 
-		"chaincodeVer": "v3", 
-		"method": "insertData",	
+	m := []byte(`{
+		"channel": "mychannel",
+		"chaincode": "iotcc",
+		"chaincodeVer": "v3",
+		"method": "insertData",
 		"args": ["` + id + `", "` +
 		heartRate + `","` +
 		unit + `","` +
 		timeStamp + `"]}`,
 	)
 
-	body := request.Request(m, url)
+	body := Request(m, url)
 
 	//fmt.Println(body)
 
@@ -59,7 +57,7 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 		"args": ["001"]
 	}`)
 
-	body := request.Request(m, url)
+	body := Request(m, url)
 
 	//fmt.Println(body)
 
