@@ -54,7 +54,6 @@ func invokeBlockchain(hostname, chaincode, channel, chaincodeVer, method string,
 		Method:       method,
 		Args:         args,
 	}
-	fmt.Println("invoke blockchain start")
 	responseFromBlockchain, err := blockchainHandler(url, payloadStruct)
 	if err != nil {
 		return responseFromBlockchain, err
@@ -78,8 +77,6 @@ func blockchainHandler(url string, payloadStruct BlockchainRequest) (BlockchainR
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	fmt.Println("about to send request")
-
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -87,7 +84,6 @@ func blockchainHandler(url string, payloadStruct BlockchainRequest) (BlockchainR
 		return BlockchainResponse{}, err
 	}
 	defer resp.Body.Close()
-	fmt.Println("got request")
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return BlockchainResponse{}, err
@@ -96,14 +92,10 @@ func blockchainHandler(url string, payloadStruct BlockchainRequest) (BlockchainR
 	// create struct from blockchain response
 	responseStruct := BlockchainResponse{}
 
-	fmt.Println("about to unmarshal")
-	fmt.Println(responseStruct)
 	if err := json.Unmarshal(body, &responseStruct); err != nil {
 		fmt.Println("error with unmarshalling json: " + err.Error())
 		return BlockchainResponse{}, err
 	}
-	fmt.Println("unmarshaled")
-	fmt.Println(responseStruct)
 
 	return responseStruct, nil
 }
