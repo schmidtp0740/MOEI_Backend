@@ -18,7 +18,7 @@ func main() {
 
 	// retrieve heart rate data for a patient
 	// TODO
-	router.HandleFunc("/hr/{patientID}", GetData).Methods("GET")
+	router.HandleFunc("/hr/{patientID}", getHeartRateHistoryForPatient).Methods("GET")
 
 	// retreive hack status
 	// TODO

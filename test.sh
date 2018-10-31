@@ -22,9 +22,9 @@ clear
 # printf "\n"
 
 printf "insertHeartRate\n"
-curl -H "Content-type:application/json" -X POST http://localhost:8080/hr -d ''
+curl -H "Content-type:application/json" -X POST http://localhost:8080/hr -d '{"patientID":"p01","heartRate":80,"timestamp":123457}'
 printf "\n"
 
-# printf "getHeartRateDataForPatient\n"
-# curl -H "Content-type:application/json" -X GET http://localhost:8080/hr/p01 -d ''
-# printf "\n"
+printf "getHeartRateDataForPatient\n"
+curl -H "Content-type:application/json" -X GET http://localhost:8080/hr/p01 
+printf "\n"

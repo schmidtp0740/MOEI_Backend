@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type heartRateRequest struct {
@@ -35,7 +37,7 @@ func insertHeartRateMessage(w http.ResponseWriter, r *http.Request) {
 		blockVariable.Chaincode,
 		blockVariable.Channel,
 		blockVariable.ChaincodeVer,
-		"insertRx",
+		"newHeartRateMessage",
 		[]string{
 			request.PatientID,
 			strconv.Itoa(request.HeartRate),
@@ -53,21 +55,28 @@ func insertHeartRateMessage(w http.ResponseWriter, r *http.Request) {
 	w.Write(resultAsBytes)
 }
 
-// GetData ...
-func GetData(w http.ResponseWriter, r *http.Request) {
+// getHeartRateHistoryForPatient ...
+func getHeartRateHistoryForPatient(w http.ResponseWriter, r *http.Request) {
 
-	url := "http://129.213.52.239:4001/bcsgw/rest/v1/transaction/query"
-	m := []byte(`{
-		"channel": "mychannel",
-		"chaincode": "iotcc",
-		"chaincodeVer": "v3",
-		"method": "getHistory",
-		"args": ["001"]
-	}`)
+	patientID := mux.Vars(r)["patientID"]
 
-	body := Request(m, url)
+	blockVariable := getBlockchainVariables()
 
-	//fmt.Println(body)
+	result, err := queryBlockchain(blockVariable.Hostname,
+		blockVariable.Chaincode,
+		blockVariable.Channel,
+		blockVariable.ChaincodeVer,
+		"getHeartRateHistory",
+		[]string{
+			patientID,
+		})
+	if err != nil || result.ReturnCode == "Failure" {
+		fmt.Println("error with querying blockchain for rx: " + result.Info)
+		result.Result = "error querying the blockchain" + result.Info
 
-	json.NewEncoder(w).Encode(body)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(result.Result))
+
 }
