@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  revision = "d523deb1b23d913de5bdada721a6071e71283618"
+  version = "v1.4.0"
+
+[[projects]]
   name = "github.com/gorilla/context"
   packages = ["."]
   revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
@@ -14,14 +20,26 @@
   version = "v1.6.2"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/mediocregopher/radix.v2"
+  packages = ["redis"]
+  revision = "94360be262532d465b7e4760c7a67195d3319a87"
+
+[[projects]]
   name = "github.com/rs/cors"
   packages = ["."]
   revision = "3fb1b69b103a84de38a19c3c6ec073dd6caa4d3f"
   version = "v1.5.0"
 
+[[projects]]
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
+  version = "v1.2.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3377d8a9285574b21fda0eb141a78c0eb3b3398dfc846447add3ec47978a7c2f"
+  inputs-digest = "1fad860c61cb8e9b86d45276ef300c53b57fe977e4c91055fed0a8f4fa2c4cdb"
   solver-name = "gps-cdcl"
   solver-version = 1
