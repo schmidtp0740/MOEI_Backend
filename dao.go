@@ -8,7 +8,8 @@ import (
 	"net/http"
 )
 
-type blockchainRequest struct {
+// BlockchainRequest ...
+type BlockchainRequest struct {
 	Chaincode    string   `json:"chaincode"`
 	Channel      string   `json:"channel"`
 	ChaincodeVer string   `json:"chaincodeVer"`
@@ -16,71 +17,17 @@ type blockchainRequest struct {
 	Args         []string `json:"args"`
 }
 
-type blockchainResponse struct {
+// BlockchainResponse ...
+type BlockchainResponse struct {
 	ReturnCode string `json:"returnCode"`
 	Result     string `json:"result"`
 	Info       string `json:"info,omitempty"`
 }
 
-// var rxList []Rx
-// var rxLedger []Rx
-// var rxCounter int
-
-// FindAll ...
-func FindAll() []Rx {
-	// return rxLedger
-	return nil
-}
-
-// FindAllRxForPatient ...
-func FindAllRxForPatient(id string) (rxResponse []Rx) {
-
-	// for _, rx := range rxList {
-	// 	if rx.ID == id {
-	// 		rxResponse = append(rxResponse, rx)
-	// 	}
-
-	// }
-	return
-}
-
-// Insert ...
-// func (rx *Rx) Insert(patientID string) (string, error) {
-
-// 	return "", nil
-// }
-
-// Modify ...
-// func (rx *Rx) Modify() bool {
-// 	// for key, rxTemp := range rxList {
-// 	// 	if rxTemp.RXID == rx.RXID {
-// 	// 		rxT := Rx{
-// 	// 			RXID:         rxTemp.RXID,
-// 	// 			ID:           rxTemp.ID,
-// 	// 			FirstName:    rxTemp.FirstName,
-// 	// 			LastName:     rxTemp.LastName,
-// 	// 			DOB:          rxTemp.DOB,
-// 	// 			Prescription: rx.Prescription,
-// 	// 			Refills:      rxTemp.Refills,
-// 	// 			Doctor:       rxTemp.Doctor,
-// 	// 			License:      rxTemp.License,
-// 	// 			User:         rx.User,
-// 	// 			Status:       rx.Status,
-// 	// 			Insurance:    &ins{Company: rxTemp.Insurance.Company, PolicyID: rxTemp.Insurance.PolicyID, ExpirationDate: rxTemp.Insurance.ExpirationDate},
-// 	// 			TimeStamp:    rx.TimeStamp,
-// 	// 		}
-// 	// 		rxList[key].Status = rx.Status
-// 	// 		rxList[key].Prescription = rx.Prescription
-// 	// 		rxLedger = append(rxLedger, rxT)
-// 	// 	}
-// 	// }
-// 	return true
-// }
-
-func queryBlockchain(hostname, chaincode, channel, chaincodeVer, method string, args []string) (blockchainResponse, error) {
+func queryBlockchain(hostname, chaincode, channel, chaincodeVer, method string, args []string) (BlockchainResponse, error) {
 	url := hostname + "/bcsgw/rest/v1/transaction/query"
 
-	payloadStruct := blockchainRequest{
+	payloadStruct := BlockchainRequest{
 		Chaincode:    chaincode,
 		Channel:      channel,
 		ChaincodeVer: chaincodeVer,
@@ -97,10 +44,10 @@ func queryBlockchain(hostname, chaincode, channel, chaincodeVer, method string, 
 	return responseFromBlockchain, nil
 }
 
-func invokeBlockchain(hostname, chaincode, channel, chaincodeVer, method string, args []string) (blockchainResponse, error) {
+func invokeBlockchain(hostname, chaincode, channel, chaincodeVer, method string, args []string) (BlockchainResponse, error) {
 	url := hostname + "/bcsgw/rest/v1/transaction/invocation"
 
-	payloadStruct := blockchainRequest{
+	payloadStruct := BlockchainRequest{
 		Chaincode:    chaincode,
 		Channel:      channel,
 		ChaincodeVer: chaincodeVer,
@@ -118,16 +65,16 @@ func invokeBlockchain(hostname, chaincode, channel, chaincodeVer, method string,
 
 }
 
-func blockchainHandler(url string, payloadStruct blockchainRequest) (blockchainResponse, error) {
+func blockchainHandler(url string, payloadStruct BlockchainRequest) (BlockchainResponse, error) {
 
 	payloadAsBytes, err := json.Marshal(payloadStruct)
 	if err != nil {
-		return blockchainResponse{}, err
+		return BlockchainResponse{}, err
 	}
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadAsBytes))
 	if err != nil {
-		return blockchainResponse{}, err
+		return BlockchainResponse{}, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
@@ -137,23 +84,23 @@ func blockchainHandler(url string, payloadStruct blockchainRequest) (blockchainR
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("error with blockchain query:" + err.Error())
-		return blockchainResponse{}, err
+		return BlockchainResponse{}, err
 	}
 	defer resp.Body.Close()
 	fmt.Println("got request")
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return blockchainResponse{}, err
+		return BlockchainResponse{}, err
 	}
 
 	// create struct from blockchain response
-	responseStruct := blockchainResponse{}
+	responseStruct := BlockchainResponse{}
 
 	fmt.Println("about to unmarshal")
 	fmt.Println(responseStruct)
 	if err := json.Unmarshal(body, &responseStruct); err != nil {
 		fmt.Println("error with unmarshalling json: " + err.Error())
-		return blockchainResponse{}, err
+		return BlockchainResponse{}, err
 	}
 	fmt.Println("unmarshaled")
 	fmt.Println(responseStruct)
