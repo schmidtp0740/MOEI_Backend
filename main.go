@@ -14,7 +14,7 @@ func main() {
 
 	// insert heart rate data for patient
 	// TODO
-	router.HandleFunc("/hr", SendData).Methods("POST")
+	router.HandleFunc("/hr", insertHeartRateMessage).Methods("POST")
 
 	// retrieve heart rate data for a patient
 	// TODO
