@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-type ins struct {
+type insuranceRequest struct {
 	Name           string `json:"name"`
 	Address        string `json:"address"`
 	Phone          string `json:"phone"`
