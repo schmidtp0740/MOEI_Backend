@@ -49,12 +49,10 @@ func main() {
 	router.HandleFunc("/insurance", insertInsurance).Methods("POST")
 
 	// get blood pressure history
-	// TODO
-	// router.HandleFunc("/bp/{patientID}", getBloodPressure).Methods("GET")
+	router.HandleFunc("/bp/{patientID}", getBloodPressure).Methods("GET")
 
 	// insert blood pressure message
-	// TODO
-	// router.HandleFunc("/bp", insertBloodPressure).Methods("POST")
+	router.HandleFunc("/bp", insertBloodPressure).Methods("POST")
 
 	fmt.Println("Listening on port: 8080")
 	c := cors.AllowAll()

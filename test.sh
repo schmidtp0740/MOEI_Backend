@@ -41,12 +41,20 @@ clear
 # curl -H "Content-type:application/json" -X GET http://localhost:8080/bcs 
 # printf "\n"
 
-printf "insertInsurance\n"
-curl -H "Content-type:application/json" -X POST http://localhost:8080/insurance -d '{"patientID": "p01", "insuranceName": "gieco", "expDate": 12345, "policyID": "p0000123"}'
+# printf "insertInsurance\n"
+# curl -H "Content-type:application/json" -X POST http://localhost:8080/insurance -d '{"patientID": "p01", "insuranceName": "gieco", "expDate": 12345, "policyID": "p0000123"}'
+# printf "\n"
+
+# printf "getInsurance\n"
+# curl -H "Content-type:application/json" -X GET http://localhost:8080/insurance/p01
+# printf "\n"
+
+printf "insertBloodPressure\n"
+curl -H "Content-type:application/json" -X POST http://localhost:8080/bp -d '{"patientID": "p01", "low": 10, "high": 81, "timestamp": 15123124}'
 printf "\n"
 
-printf "getInsurance\n"
-curl -H "Content-type:application/json" -X GET http://localhost:8080/insurance/p01
+printf "getBloodPressure\n"
+curl -H "Content-type:application/json" -X GET http://localhost:8080/bp/p01
 printf "\n"
 
 
