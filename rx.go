@@ -13,16 +13,19 @@ import (
 
 // Rx ...
 type Rx struct {
-	PatientID    string `json:"patientID,omitempty"`
-	RXID         string `json:"rxid,omitempty"`      // id of the prescription
-	Timestamp    int    `json:"timestamp,omitempty"` // timestamp of when prescription was prescribed and filled
-	Doctor       string `json:"doctor,omitempty"`    // name of the doctor
-	Pharmacist   string `json:"pharmacist,omitempty"`
-	Prescription string `json:"prescription,omitempty"` // prescription name
-	Refills      int    `json:"refills,omitempty"`      // number of refills
-	ExpirateDate int    `json:"expDate,omitempty"`
-	Status       string `json:"status,omitempty"` // current status of the prescription
-	Approved     string `json:"approved,omitempty"`
+	PatientID    string  `json:"patientID,omitempty"`
+	RXID         string  `json:"rxid,omitempty"`      // id of the prescription
+	Timestamp    int     `json:"timestamp,omitempty"` // timestamp of when prescription was prescribed and filled
+	Doctor       string  `json:"doctor,omitempty"`    // name of the doctor
+	DocLicense   string  `json:"docLicense,omitempty"`
+	Pharmacist   string  `json:"pharmacist,omitempty"`
+	PhLicense    string  `json:"phLicense,omitempty"`
+	Prescription string  `json:"prescription,omitempty"` // prescription name
+	Refills      int     `json:"refills,omitempty"`      // number of refills
+	Quantity     float64 `json:"quantity,omitempty"`
+	ExpirateDate int     `json:"expDate,omitempty"`
+	Status       string  `json:"status,omitempty"` // current status of the prescription
+	Approved     string  `json:"approved,omitempty"`
 }
 
 // GetAllRx ...
@@ -210,11 +213,12 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 			request.RXID,
 			strconv.Itoa(request.Timestamp),
 			request.Doctor,
+			request.DocLicense,
 			request.Prescription,
 			strconv.Itoa(request.Refills),
+			fmt.Sprintf("%f", request.Quantity),
 			strconv.Itoa(request.ExpirateDate),
 			request.Status,
-			request.Approved,
 		})
 	if err != nil || result.ReturnCode == "Failure" {
 		fmt.Println("error with invoking blockchain: " + result.Info)
@@ -229,10 +233,59 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// ModifyRx ...
+// FillRx ...
 // Input: rx data (modified)
 // Output: success or failure
-func ModifyRx(w http.ResponseWriter, r *http.Request) {
+func FillRx(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("--- starting fillRx----")
+	request := Rx{}
+
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		fmt.Println("error decoding payload:" + err.Error())
+		response := BlockchainResponse{}
+		response.Result = "Error: incorrect payload"
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(response.Result))
+		return
+	}
+	defer r.Body.Close()
+
+	blockVariable := getBlockchainVariables()
+
+	result, err := invokeBlockchain(blockVariable.Hostname,
+		blockVariable.Chaincode,
+		blockVariable.Channel,
+		blockVariable.ChaincodeVer,
+		"fillRx",
+		[]string{
+			request.PatientID,
+			request.RXID,
+			strconv.Itoa(request.Timestamp),
+			request.Pharmacist,
+			request.PhLicense,
+			request.Prescription,
+			strconv.Itoa(request.Refills),
+			strconv.Itoa(request.ExpirateDate),
+			request.Status,
+		})
+	if err != nil || result.ReturnCode == "Failure" {
+		fmt.Println("error with invoking blockchain: " + result.Result)
+
+	}
+
+	resultAsBytes, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println("error marshalling response: " + err.Error())
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(resultAsBytes)
+
+}
+
+// ApproveRx ...
+// Input: rx data (modified)
+// Output: success or failure
+func ApproveRx(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("--- starting modifyRx----")
 	request := Rx{}
 
@@ -252,17 +305,11 @@ func ModifyRx(w http.ResponseWriter, r *http.Request) {
 		blockVariable.Chaincode,
 		blockVariable.Channel,
 		blockVariable.ChaincodeVer,
-		"modifyRx",
+		"approveRx",
 		[]string{
 			request.PatientID,
 			request.RXID,
 			strconv.Itoa(request.Timestamp),
-			request.Doctor,
-			request.Pharmacist,
-			request.Prescription,
-			strconv.Itoa(request.Refills),
-			strconv.Itoa(request.ExpirateDate),
-			request.Status,
 			request.Approved,
 		})
 	if err != nil || result.ReturnCode == "Failure" {

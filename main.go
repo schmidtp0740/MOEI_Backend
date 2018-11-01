@@ -39,8 +39,11 @@ func main() {
 	// Insert Rx
 	router.HandleFunc("/rx", InsertRx).Methods("POST")
 
-	// Modify Rx
-	router.HandleFunc("/rx", ModifyRx).Methods("PATCH")
+	// Fill Rx
+	router.HandleFunc("/rx", FillRx).Methods("PATCH")
+
+	// Approve Rx
+	router.HandleFunc("/rx", ApproveRx).Methods("PUT")
 
 	// Get Insurance
 	router.HandleFunc("/insurance/{patientID}", GetInsurance).Methods("GET")
