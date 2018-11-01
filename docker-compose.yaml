@@ -9,6 +9,7 @@ services:
       channel: "mychannel"
       chaincode: "emrcc"
       chaincodeVer: "v1"
+      dbName: "mysql"
     depends_on:
     - mysql
   mysql:
