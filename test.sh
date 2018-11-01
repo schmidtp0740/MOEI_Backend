@@ -29,8 +29,18 @@ clear
 # curl -H "Content-type:application/json" -X GET http://localhost:8080/hr/p01 
 # printf "\n"
 
-printf "getAllRxHistory\n"
-curl -H "Content-type:application/json" -X GET http://localhost:8080/rx 
+# printf "getAllRxHistory\n"
+# curl -H "Content-type:application/json" -X GET http://localhost:8080/rx 
+# printf "\n"
+
+printf "hack\n"
+curl -H "Content-type:application/json" -X GET http://localhost:8080/hack 
 printf "\n"
+
+printf "isHacked\n"
+curl -H "Content-type:application/json" -X GET http://localhost:8080/bcs 
+printf "\n"
+
+
 
 
