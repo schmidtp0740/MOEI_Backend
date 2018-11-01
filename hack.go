@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -16,38 +16,49 @@ type payload struct {
 
 // GetStatus ...
 func GetStatus(w http.ResponseWriter, r *http.Request) {
-	var payload payload
 
-	if status {
-		payload.RXID = "RX001"
-		payload.Blockchain = "Doctor"
-		payload.Status = "True"
-	} else {
-		payload.Status = "False"
+	blockVariable := getBlockchainVariables()
 
+	result, err := queryBlockchain(blockVariable.Hostname,
+		blockVariable.Chaincode,
+		blockVariable.Channel,
+		blockVariable.ChaincodeVer,
+		"isHacked",
+		[]string{})
+	if err != nil || result.ReturnCode == "Failure" {
+		fmt.Println("error with querying blockchain for rx: " + result.Info)
+		result.Result = "error querying the blockchain" + result.Info
 	}
 
-	payloadJSON, err := json.Marshal(payload)
-	if err != nil {
-		panic(err)
-	}
+	fmt.Println("Result from blockchain: ")
+	fmt.Println("returnCode: " + result.ReturnCode)
+	fmt.Println("Result: " + result.Result)
+	fmt.Println("Info: " + result.Info)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(payloadJSON)
+	w.Write([]byte(result.Result))
 
 }
 
 // SetStatus ...
 func SetStatus(w http.ResponseWriter, r *http.Request) {
 
-	if status {
-		status = false
-	} else {
-		status = true
+	blockVariable := getBlockchainVariables()
+
+	result, err := invokeBlockchain(blockVariable.Hostname,
+		blockVariable.Chaincode,
+		blockVariable.Channel,
+		blockVariable.ChaincodeVer,
+		"hack",
+		[]string{})
+	if err != nil || result.ReturnCode == "Failure" {
+		fmt.Println("error with invoking blockchain: " + result.Info)
 	}
 
-	var payload = []byte(`{}`)
-	b := bytes.NewBuffer(payload)
+	resultAsBytes, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println("error marshalling response: " + err.Error())
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(b)
+	w.Write(resultAsBytes)
 }
