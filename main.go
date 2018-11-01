@@ -13,19 +13,15 @@ func main() {
 	router := mux.NewRouter()
 
 	// insert heart rate data for patient
-	// TODO
 	router.HandleFunc("/hr", insertHeartRateMessage).Methods("POST")
 
 	// retrieve heart rate data for a patient
-	// TODO
 	router.HandleFunc("/hr/{patientID}", getHeartRateHistoryForPatient).Methods("GET")
 
 	// retreive hack status
-	// TODO
 	router.HandleFunc("/bcs", GetStatus).Methods("GET")
 
 	// push hack status
-	// TODO
 	router.HandleFunc("/hack", SetStatus).Methods("GET")
 
 	// Get All Patient Data
@@ -35,7 +31,6 @@ func main() {
 	router.HandleFunc("/pd/{patientID}", GetPerson).Methods("GET")
 
 	//Get All Rx Data History
-	// TODO
 	router.HandleFunc("/rx", GetAllRx).Methods("GET")
 
 	// Get Rx Data
