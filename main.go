@@ -43,12 +43,10 @@ func main() {
 	router.HandleFunc("/rx", ModifyRx).Methods("PATCH")
 
 	// Get Insurance
-	// TODO
-	router.HandleFunc("/insurance/{patientID}", GetIns).Methods("GET")
+	router.HandleFunc("/insurance/{patientID}", GetInsurance).Methods("GET")
 
 	// New Insurance
-	// TODO
-	// router.HandleFunc("/insurance/{patientID}", NewIns).Methods("POST")
+	router.HandleFunc("/insurance", insertInsurance).Methods("POST")
 
 	fmt.Println("Listening on port: 8080")
 	c := cors.AllowAll()

@@ -33,12 +33,20 @@ clear
 # curl -H "Content-type:application/json" -X GET http://localhost:8080/rx 
 # printf "\n"
 
-printf "hack\n"
-curl -H "Content-type:application/json" -X GET http://localhost:8080/hack 
+# printf "hack\n"
+# curl -H "Content-type:application/json" -X GET http://localhost:8080/hack 
+# printf "\n"
+
+# printf "isHacked\n"
+# curl -H "Content-type:application/json" -X GET http://localhost:8080/bcs 
+# printf "\n"
+
+printf "insertInsurance\n"
+curl -H "Content-type:application/json" -X POST http://localhost:8080/insurance -d '{"patientID": "p01", "insuranceName": "gieco", "expDate": 12345, "policyID": "p0000123"}'
 printf "\n"
 
-printf "isHacked\n"
-curl -H "Content-type:application/json" -X GET http://localhost:8080/bcs 
+printf "getInsurance\n"
+curl -H "Content-type:application/json" -X GET http://localhost:8080/insurance/p01
 printf "\n"
 
 
