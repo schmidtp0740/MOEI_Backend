@@ -113,7 +113,7 @@ func GetAllRx(w http.ResponseWriter, r *http.Request) {
 				// fmt.Printf("RXID: %s\n", rx.RXID)
 				// fmt.Printf("timestamp: %d\n", rx.Timestamp)
 				// store patientID, rxid, and timestamp
-				_, err = db.Exec("INSERT INTO rxlist VALUES(?, ?, ?)", person.PatientID, rx.RXID, rx.Timestamp)
+				_, err = db.Exec("INSERT INTO rxlist VALUES(?, ?, ?, ?)", person.PatientID, rx.RXID, rx.Timestamp, rx.Status)
 				if err != nil {
 					fmt.Println("error: " + err.Error())
 				}
@@ -127,24 +127,25 @@ func GetAllRx(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var col1, col2, col3 []byte
+	var patientID, rxid, timestamp, status []byte
 	for rows.Next() {
-		err = rows.Scan(&col1, &col2, &col3)
+		err = rows.Scan(&patientID, &rxid, &timestamp, &status)
 
 		if err != nil {
 			panic(err.Error()) // Just for example purpose. You should use proper error handling instead of panic
 		}
 
 		// Use the string value
-		fmt.Printf("Row: %s %s %s\n", string(col1), string(col2), string(col3))
-		timestamp, err := strconv.Atoi(string(col3))
+		fmt.Printf("Row: %s %s %s %s\n", string(patientID), string(rxid), string(timestamp), string(status))
+		time, err := strconv.Atoi(string(timestamp))
 		if err != nil {
 			fmt.Println("error unparsing int from string for timestamp")
 		}
 		tempRx := Rx{
-			PatientID: string(col1),
-			RXID:      string(col2),
-			Timestamp: timestamp,
+			PatientID: string(patientID),
+			RXID:      string(rxid),
+			Timestamp: time,
+			Status:    string(status),
 		}
 		rxList.RXList = append(rxList.RXList, tempRx)
 
