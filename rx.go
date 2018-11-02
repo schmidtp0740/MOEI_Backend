@@ -179,6 +179,7 @@ func GetRx(w http.ResponseWriter, r *http.Request) {
 	if err != nil || result.ReturnCode == "Failure" {
 		fmt.Println("error with querying blockchain for rx: " + result.Info)
 		result.Result = "error querying the blockchain" + result.Info
+		w.WriteHeader(409)
 
 	}
 
@@ -197,6 +198,7 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error decoding payload:" + err.Error())
 		response := BlockchainResponse{}
 		response.Result = "Error: incorrect payload"
+		w.WriteHeader(409)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(response.Result))
 		return
@@ -224,11 +226,13 @@ func InsertRx(w http.ResponseWriter, r *http.Request) {
 		})
 	if err != nil || result.ReturnCode == "Failure" {
 		fmt.Println("error with invoking blockchain: " + result.Info)
+		w.WriteHeader(409)
 	}
 
 	resultAsBytes, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println("error marshalling response: " + err.Error())
+		w.WriteHeader(409)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(resultAsBytes)
@@ -246,6 +250,7 @@ func FillRx(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error decoding payload:" + err.Error())
 		response := BlockchainResponse{}
 		response.Result = "Error: incorrect payload"
+		w.WriteHeader(409)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(response.Result))
 		return
@@ -272,12 +277,14 @@ func FillRx(w http.ResponseWriter, r *http.Request) {
 		})
 	if err != nil || result.ReturnCode == "Failure" {
 		fmt.Println("error with invoking blockchain: " + result.Result)
+		w.WriteHeader(409)
 
 	}
 
 	resultAsBytes, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println("error marshalling response: " + err.Error())
+		w.WriteHeader(409)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(resultAsBytes)
@@ -295,6 +302,7 @@ func ApproveRx(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error decoding payload:" + err.Error())
 		response := BlockchainResponse{}
 		response.Result = "Error: incorrect payload"
+		w.WriteHeader(409)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(response.Result))
 		return
@@ -316,12 +324,13 @@ func ApproveRx(w http.ResponseWriter, r *http.Request) {
 		})
 	if err != nil || result.ReturnCode == "Failure" {
 		fmt.Println("error with invoking blockchain: " + result.Result)
-
+		w.WriteHeader(409)
 	}
 
 	resultAsBytes, err := json.Marshal(result)
 	if err != nil {
 		fmt.Println("error marshalling response: " + err.Error())
+		w.WriteHeader(409)
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(resultAsBytes)
